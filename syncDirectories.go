@@ -15,11 +15,20 @@ func main() {
 	fileToHashPath := "/opt/learnGo/syncDirectories/orchid.txt"
 
 	if dirExists(dirPath1) {
-		fmt.Println("Directory exists")
+		fmt.Printf("Directory %s exists\n", dirPath1)
 	}
 
-	fmt.Println(getFileHash(fileToHashPath))
-	fmt.Println(fileExist(fileToHashPath))
+	if fileExist(fileToHashPath) {
+		fmt.Printf("File %s exists\n", fileToHashPath)
+	}
+
+	wantedHash, _ := getFileHash(fileToHashPath)
+	fmt.Printf("Hash of the %s is %s\n", fileToHashPath, wantedHash)
+
+	fmt.Println("---------------------------")
+
+	printTheContentsOfDir(dirPath1)
+
 }
 
 func dirExists(absPath string) bool {
@@ -56,7 +65,15 @@ func getFileHash(filePath string) (string, error) {
 }
 
 func printTheContentsOfDir(dirPath string) {
-	fmt.Println("placeholder")
+	entries, err := os.ReadDir(dirPath)
+	if err != nil {
+		fmt.Println("Error reading directory.", err)
+		return
+	}
+
+	for _, entry := range entries {
+		fmt.Println(entry.Name())
+	}
 }
 
 func printTheContentsOfFile(filePath string) {
