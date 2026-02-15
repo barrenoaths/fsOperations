@@ -7,16 +7,20 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 func main() {
 	fmt.Println("--- Sync stuff ---")
 
 	dirPath1 := "/opt/learnGo"
-	fileToHashPath := "/opt/learnGo/syncDirectories/orchid.txt"
+	fileToHashPath := "/opt/learnGo/fsOperations/orchid.txt"
 
-	sourceFile := "/opt/learnGo/syncDirectories/orchid.txt"
-	destinationFile := "/opt/learnGo/syncDirectories/orchid2.txt"
+	sourceFile := "/opt/learnGo/fsOperations/orchid.txt"
+	destinationFile := "/opt/learnGo/fsOperations/orchid2.txt"
+
+	dirToCopy := "/opt/learnGo/fsOperations/orchid"
+	targetDirToCopy := "/opt/learnGo/fsOperations/copyOfOrchid/"
 
 	if dirExists(dirPath1) {
 		fmt.Printf("Directory %s exists\n", dirPath1)
@@ -35,6 +39,8 @@ func main() {
 	printTheContentsOfFile(fileToHashPath)
 	fmt.Println("---------------------------")
 	copyFile(sourceFile, destinationFile)
+
+	copyDirWithFiles(dirToCopy, targetDirToCopy)
 }
 
 func dirExists(absPath string) bool {
@@ -125,8 +131,60 @@ func copyDir() {
 	fmt.Println("placeholder")
 }
 
-func copyDirWithFiles() {
-	fmt.Println("placeholder")
+/*
+func copyDirWithFiles(srcDir, destDir string) error {
+	err := os.MkdirAll(destDir, 0o755)
+	if err != nil {
+		return err
+	}
+
+	entries, err := os.ReadDir(srcDir)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		srcPath := filepath.Join(srcDir, entry.Name())
+		dstPath := filepath.Join(destDir, entry.Name())
+
+		if entry.IsDir() {
+			err = copyDirWithFiles(srcPath, dstPath)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = copyDirWithFiles(srcPath, dstPath)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+*/
+
+func copyDirWithFiles(srcDir, destDir string) error {
+	return filepath.WalkDir(srcDir, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Construct the destination path
+		relPath, err := filepath.Rel(srcDir, path)
+		if err != nil {
+			return err
+		}
+		dstPath := filepath.Join(destDir, relPath)
+
+		if d.IsDir() {
+			// Create the directory in the destination
+			return os.MkdirAll(dstPath, 0755)
+		} else {
+			// Copy the file
+			return copyFile(path, dstPath)
+		}
+	})
 }
 
 func findLineInFile() {
