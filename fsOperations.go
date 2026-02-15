@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -14,6 +15,9 @@ func main() {
 	dirPath1 := "/opt/learnGo"
 	fileToHashPath := "/opt/learnGo/syncDirectories/orchid.txt"
 
+	sourceFile := "/opt/learnGo/syncDirectories/orchid.txt"
+	destinationFile := "/opt/learnGo/syncDirectories/orchid2.txt"
+
 	if dirExists(dirPath1) {
 		fmt.Printf("Directory %s exists\n", dirPath1)
 	}
@@ -26,9 +30,11 @@ func main() {
 	fmt.Printf("Hash of the %s is %s\n", fileToHashPath, wantedHash)
 
 	fmt.Println("---------------------------")
-
 	printTheContentsOfDir(dirPath1)
-
+	fmt.Println("---------------------------")
+	printTheContentsOfFile(fileToHashPath)
+	fmt.Println("---------------------------")
+	copyFile(sourceFile, destinationFile)
 }
 
 func dirExists(absPath string) bool {
@@ -77,11 +83,42 @@ func printTheContentsOfDir(dirPath string) {
 }
 
 func printTheContentsOfFile(filePath string) {
-	fmt.Println("placeholder")
+	file, err := os.Open(filePath)
+	if err != nil {
+		fmt.Println("Error opening file.", err)
+		return
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Println("Error reading file", err)
+	}
 }
 
-func copyFile() {
-	fmt.Println("placeholder")
+func copyFile(srcPath, destPath string) error {
+	sourceFile, err := os.Open(srcPath)
+	if err != nil {
+		return err
+	}
+	defer sourceFile.Close()
+
+	destFile, err := os.Create(destPath)
+	if err != nil {
+		return err
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		return err
+	}
+
+	return destFile.Sync()
 }
 
 func copyDir() {
