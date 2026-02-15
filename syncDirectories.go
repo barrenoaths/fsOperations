@@ -56,5 +56,5 @@ func getFileHash(filePath string) (string, error) {
 }
 
 func printTheContentsOfDir(dirPath string) {
-	fmt.Println("test")
+	fmt.Println("test123")
 }
