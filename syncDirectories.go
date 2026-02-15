@@ -54,3 +54,7 @@ func getFileHash(filePath string) (string, error) {
 	hashBytes := hash.Sum(nil)
 	return hex.EncodeToString(hashBytes), nil
 }
+
+func printTheContentsOfDir(dirPath string) {
+	fmt.Println("test")
+}
