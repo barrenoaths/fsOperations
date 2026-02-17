@@ -42,6 +42,9 @@ func main() {
 	copyFile(sourceFile, destinationFile)
 
 	copyDirWithFiles(dirToCopy, targetDirToCopy)
+
+	fmt.Println(findPhraseInFile(fileToHashPath, "break"))
+
 }
 
 func dirExists(absPath string) bool {
@@ -128,10 +131,6 @@ func copyFile(srcPath, destPath string) error {
 	return destFile.Sync()
 }
 
-func copyDir() {
-	fmt.Println("placeholder")
-}
-
 func copyDirWithFiles(srcDir, destDir string) error {
 	return filepath.WalkDir(srcDir, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
@@ -155,7 +154,7 @@ func copyDirWithFiles(srcDir, destDir string) error {
 	})
 }
 
-func findLineInFile(filePath, phrase string) (bool, error) {
+func findPhraseInFile(filePath, phrase string) (bool, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return false, err
@@ -177,11 +176,7 @@ func findLineInFile(filePath, phrase string) (bool, error) {
 	return false, nil
 }
 
-func findPhraseInFile() {
-	fmt.Println("placeholder")
-}
-
-func getFileMetadata() {
+func getFileInfo() {
 	fmt.Println("placeholder")
 }
 
