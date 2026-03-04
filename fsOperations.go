@@ -44,6 +44,7 @@ func main() {
 	copyDirWithFiles(dirToCopy, targetDirToCopy)
 
 	fmt.Println(findPhraseInFile(fileToHashPath, "break"))
+	getFileInfo(fileToHashPath)
 
 }
 
@@ -176,8 +177,22 @@ func findPhraseInFile(filePath, phrase string) (bool, error) {
 	return false, nil
 }
 
-func getFileInfo() {
-	fmt.Println("placeholder")
+func getFileInfo(filePath string) error {
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		fmt.Printf("Error getting file info: %v\n", err)
+		return err
+	}
+
+	//processName := "obexd"
+	fmt.Printf("Name: %s\n", fileInfo.Name())
+	fmt.Printf("Size: %d\n", fileInfo.Size())
+	fmt.Printf("Permissions: %v\n", fileInfo.Mode())
+	fmt.Printf("Last modified: %v\n", fileInfo.ModTime())
+	fmt.Printf("Is directory: %v\n", fileInfo.IsDir())
+	//fmt.Println(os.FindProcess(processName))
+	return err
+
 }
 
 func modifyFileMetadata() {
